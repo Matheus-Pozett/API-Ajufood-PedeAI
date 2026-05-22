@@ -9,7 +9,6 @@ import br.com.ajufood.pedeai.model.CategoriaProdutoModel;
 import br.com.ajufood.pedeai.repository.CategoriaProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
