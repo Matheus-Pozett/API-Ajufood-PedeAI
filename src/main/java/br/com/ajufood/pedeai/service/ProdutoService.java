@@ -12,7 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -25,7 +24,7 @@ public class ProdutoService {
   public ProdutoResponseDTO findById(int id) {
     ProdutoModel produto = produtoRepository.findById(id)
       .orElseThrow(() -> new ObjectNotFoundException(
-        "Produto com ID " + id + "não encontrado"
+        "Produto com ID " + id + " não encontrado"
       ));
 
     return modelMapper.map(produto, ProdutoResponseDTO.class);
@@ -42,7 +41,7 @@ public class ProdutoService {
   public ProdutoResponseDTO save(ProdutoRequestDTO produtoRequestDTO) {
     try {
       ProdutoModel produto = modelMapper.map(produtoRequestDTO, ProdutoModel.class);
-      validarNomeProdutoParaCadastro(produto);
+      validarNomeProduto(produto.getNome(), null);
       ProdutoModel produtoSalvo = produtoRepository.save(produto);
 
       return modelMapper.map(produtoSalvo, ProdutoResponseDTO.class);
@@ -55,18 +54,14 @@ public class ProdutoService {
   @Transactional
   public ProdutoResponseDTO update(int id, ProdutoRequestDTO produtoRequestDTO) {
     try {
-      ProdutoModel produtoAtualizadoModel = modelMapper.map(produtoRequestDTO, ProdutoModel.class);
-      ProdutoModel produtoExistenteModel = findByIdPrivate(id);
+      ProdutoModel produtoExistente = findByIdPrivate(id);
 
-      validarNomeProdutoParaCadastro(produtoAtualizadoModel);
+      validarNomeProduto(produtoRequestDTO.getNome(), id);
 
-      produtoExistenteModel.setNome(produtoAtualizadoModel.getNome());
-      produtoExistenteModel.setPreco(produtoAtualizadoModel.getPreco());
-      produtoExistenteModel.setCategoriaProdutoId(produtoAtualizadoModel.getCategoriaProdutoId());
-      produtoExistenteModel.setDescricao(produtoAtualizadoModel.getDescricao());
-      produtoExistenteModel.setDisponivel(produtoAtualizadoModel.isDisponivel());
+      // O ModelMapper joga os dados do DTO para dentro do produtoExistente
+      modelMapper.map(produtoRequestDTO, produtoExistente);
 
-      ProdutoModel produtoSalvo = produtoRepository.save(produtoExistenteModel);
+      ProdutoModel produtoSalvo = produtoRepository.save(produtoExistente);
 
       return modelMapper.map(produtoSalvo, ProdutoResponseDTO.class);
 
@@ -77,18 +72,35 @@ public class ProdutoService {
     }
   }
 
-  private void validarNomeProdutoParaCadastro(ProdutoModel produto) {
-    if(produtoRepository.existsByNome(produto.getNome())) {
-      throw new ConstraintException(
-        "Já existe um produto cadastrado com esse nome " + produto.getNome() + "."
+  @Transactional
+  public void delete(int id) {
+    try {
+      findByIdPrivate(id);
+      produtoRepository.deleteById(id);
+    } catch (DataIntegrityViolationException e) {
+      throw new DataIntegrityException(
+        "Não foi possível excluir o produto, pois ele possui vínculos com outros registros.", e
       );
+    }
+  }
+
+  private void validarNomeProduto(String nome, Integer id) {
+    boolean existe;
+    if (id == null) {
+      existe = produtoRepository.existsByNome(nome);
+    } else {
+      existe = produtoRepository.existsByNomeAndIdNot(nome, id);
+    }
+
+    if (existe) {
+      throw new ConstraintException("Já existe um produto cadastrado com esse nome: " + nome);
     }
   }
 
   private ProdutoModel findByIdPrivate(int id) {
     return produtoRepository.findById(id)
       .orElseThrow(() -> new ObjectNotFoundException(
-        "Produto com ID " + id + "não encontrado"
+        "Produto com ID " + id + " não encontrado"
       ));
   }
 }
