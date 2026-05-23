@@ -54,7 +54,7 @@ public class ProdutoService {
   @Transactional
   public ProdutoResponseDTO update(int id, ProdutoRequestDTO produtoRequestDTO) {
     try {
-      ProdutoModel produtoExistente = findByIdPrivate(id);
+      ProdutoModel produtoExistente = findEntityById(id);
 
       validarNomeProduto(produtoRequestDTO.getNome(), id);
 
@@ -75,7 +75,7 @@ public class ProdutoService {
   @Transactional
   public void delete(int id) {
     try {
-      findByIdPrivate(id);
+      findEntityById(id);
       produtoRepository.deleteById(id);
     } catch (DataIntegrityViolationException e) {
       throw new DataIntegrityException(
@@ -97,7 +97,7 @@ public class ProdutoService {
     }
   }
 
-  private ProdutoModel findByIdPrivate(int id) {
+  private ProdutoModel findEntityById(int id) {
     return produtoRepository.findById(id)
       .orElseThrow(() -> new ObjectNotFoundException(
         "Produto com ID " + id + " não encontrado"
