@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("cliente")
+@RequestMapping("clientes")
 @RequiredArgsConstructor // Cria o construtor automaticamente com as variáveis 'final'
 public class ClienteController {
 
