@@ -7,8 +7,8 @@ import br.com.ajufood.pedeai.model.ClienteModel;
 import br.com.ajufood.pedeai.repository.ClienteRepository;
 import br.com.ajufood.pedeai.rest.dto.request.ClienteRequestDTO;
 import br.com.ajufood.pedeai.rest.dto.response.ClienteResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,15 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ClienteService {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ClienteRepository clienteRepository;
+    private final ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
-    public ClienteResponseDTO obterPorId(int id) {
+    public ClienteResponseDTO findById(int id) {
         ClienteModel cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(
                     "Cliente com ID " + id + " não encontrado"
@@ -34,7 +33,7 @@ public class ClienteService {
     }
 
     @Transactional(readOnly = true)
-    public List<ClienteResponseDTO> obterTodos() {
+    public List<ClienteResponseDTO> findAll() {
         return clienteRepository.findAll()
                 .stream()
                 .map(cliente -> modelMapper.map(cliente, ClienteResponseDTO.class))
@@ -42,7 +41,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public ClienteResponseDTO salvar(ClienteRequestDTO clienteNovoDto) {
+    public ClienteResponseDTO save(ClienteRequestDTO clienteNovoDto) {
         try {
             ClienteModel clienteNovo = modelMapper.map(clienteNovoDto, ClienteModel.class);
             validarCpfEmailParaCadastro(clienteNovo);
@@ -57,7 +56,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public ClienteResponseDTO atualizar(int id, ClienteRequestDTO clienteRequestDto) {
+    public ClienteResponseDTO update(int id, ClienteRequestDTO clienteRequestDto) {
         try {
             ClienteModel clienteAtualizadoModel = modelMapper.map(clienteRequestDto, ClienteModel.class);
             ClienteModel clienteExistenteModel = clienteRepository.findById(id)
@@ -82,9 +81,9 @@ public class ClienteService {
     }
 
     @Transactional
-    public void deletar(int id) {
+    public void delete(int id) {
         try {
-            obterPorId(id);
+            findById(id);
             clienteRepository.deleteById(id);
 
         } catch (DataIntegrityViolationException e) {

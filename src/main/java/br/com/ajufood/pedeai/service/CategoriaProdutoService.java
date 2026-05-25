@@ -7,8 +7,8 @@ import br.com.ajufood.pedeai.exception.DataIntegrityException;
 import br.com.ajufood.pedeai.exception.ObjectNotFoundException;
 import br.com.ajufood.pedeai.model.CategoriaProdutoModel;
 import br.com.ajufood.pedeai.repository.CategoriaProdutoRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,16 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor // Cria o construtor automaticamente com as variáveis 'final'
 public class CategoriaProdutoService {
 
-  @Autowired
-  private CategoriaProdutoRepository categoriaProdutoRepository;
-
-  @Autowired
-  private ModelMapper modelMapper;
+  private final CategoriaProdutoRepository categoriaProdutoRepository;
+  private final ModelMapper modelMapper;
 
   @Transactional(readOnly = true)
-  public CategoriaProdutoResponseDTO obterPorId(int id) {
+  public CategoriaProdutoResponseDTO findById(int id) {
     CategoriaProdutoModel categoria = categoriaProdutoRepository.findById(id)
       .orElseThrow(() -> new ObjectNotFoundException(
         "Categoria com ID " + id + " não encontrado"
@@ -35,7 +33,7 @@ public class CategoriaProdutoService {
   }
 
   @Transactional(readOnly = true)
-  public List<CategoriaProdutoResponseDTO> obterTodos() {
+  public List<CategoriaProdutoResponseDTO> findAll() {
     return categoriaProdutoRepository.findAll()
       .stream()
       .map(categoriaProduto -> modelMapper.map(categoriaProduto, CategoriaProdutoResponseDTO.class))
@@ -43,7 +41,7 @@ public class CategoriaProdutoService {
   }
 
   @Transactional
-  public CategoriaProdutoResponseDTO salvar(CategoriaProdutoRequestDTO dto) {
+  public CategoriaProdutoResponseDTO save(CategoriaProdutoRequestDTO dto) {
 
     try{
       CategoriaProdutoModel categoria = modelMapper.map(dto, CategoriaProdutoModel.class);
@@ -57,7 +55,7 @@ public class CategoriaProdutoService {
   }
 
   @Transactional
-  public CategoriaProdutoResponseDTO atualizar(int id, CategoriaProdutoRequestDTO categoriaDto) {
+  public CategoriaProdutoResponseDTO update(int id, CategoriaProdutoRequestDTO categoriaDto) {
     try {
       CategoriaProdutoModel categoriaAtualizadaModel = modelMapper.map(categoriaDto, CategoriaProdutoModel.class);
       CategoriaProdutoModel categoriaExistenteModel = categoriaProdutoRepository.findById(id)
@@ -82,9 +80,9 @@ public class CategoriaProdutoService {
   }
 
   @Transactional
-  public void deletar(int id){
+  public void delete(int id){
     try{
-      obterPorId(id);
+      findById(id);
       categoriaProdutoRepository.deleteById(id);
     }
     catch (DataIntegrityViolationException e){
