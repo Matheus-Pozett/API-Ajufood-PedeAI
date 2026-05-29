@@ -10,6 +10,9 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "cliente")
 @Getter
@@ -44,4 +47,30 @@ public class ClienteModel {
     @NotBlank(message = "O telefone é obrigatório.")
     @Column(name = "telefone", nullable = false, length = 11, unique = true)
     private String telefone;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PedidoModel> pedidos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EnderecoModel> enderecos = new ArrayList<>();
+
+    public void addPedido(PedidoModel pedido) {
+        pedidos.add(pedido);
+        pedido.setCliente(this);
+    }
+
+    public void removePedido(PedidoModel pedido) {
+        pedidos.remove(pedido);
+        pedido.setCliente(null);
+    }
+
+    public void addEndereco(EnderecoModel endereco) {
+        enderecos.add(endereco);
+        endereco.setCliente(this);
+    }
+
+    public void removeEndereco(EnderecoModel endereco) {
+        enderecos.remove(endereco);
+        endereco.setCliente(null);
+    }
 }
