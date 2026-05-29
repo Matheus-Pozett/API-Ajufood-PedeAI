@@ -2,16 +2,23 @@ package br.com.ajufood.pedeai.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+
+import java.util.List;
 
 @Entity
 @Table(name = "endereco")
@@ -56,7 +63,22 @@ public class EnderecoModel {
   @Length(min = 8, max = 8, message = "O cep deverá ter obrigatoriamente 8 caracteres")
   private String cep;
 
-  @Column(name = "clienteID", nullable = false)
-  @NotBlank(message = "ClienteID é obrigatório.")
-  private int clienteId;
+
+  @NotNull(message = "ClienteID é obrigatório.")
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "clienteID")
+  private ClienteModel cliente;
+
+  @OneToMany(mappedBy = "endereco")
+  private List<PedidoModel> pedidos;
+
+  public void addPedido(PedidoModel pedido) {
+    pedidos.add(pedido);
+    pedido.setEndereco(this);
+  }
+
+  public void removePedido(PedidoModel pedido) {
+    pedidos.remove(pedido);
+    pedido.setEndereco(null);
+  }
 }
