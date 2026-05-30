@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -70,7 +71,7 @@ public class EnderecoModel {
   private ClienteModel cliente;
 
   @OneToMany(mappedBy = "endereco")
-  private List<PedidoModel> pedidos;
+  private List<PedidoModel> pedidos = new ArrayList<>();
 
   public void addPedido(PedidoModel pedido) {
     pedidos.add(pedido);
