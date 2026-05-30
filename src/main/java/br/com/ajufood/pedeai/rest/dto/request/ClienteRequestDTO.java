@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.br.CPF;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClienteRequestDTO {
-    @Length(min = 2, max = 128, message = "O nome deverá ter no mínimo 2 caracteres e no máximo 256 caracteres")
+    @Length(min = 2, max = 128, message = "O nome deverá ter no mínimo 2 caracteres e no máximo 128 caracteres")
     @NotBlank(message = "O nome é obrigatório.")
     private String nome;
 
