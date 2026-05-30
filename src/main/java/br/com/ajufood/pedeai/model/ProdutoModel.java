@@ -2,9 +2,12 @@ package br.com.ajufood.pedeai.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -44,7 +47,8 @@ public class ProdutoModel {
   @Column(name = "disponivel", nullable = false)
   private boolean disponivel;
 
-  @Column(name = "categoriaProdutoID", nullable = false)
   @NotNull(message = "A categoriaID é obrigatória.")
-  private int categoriaProdutoId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "categoriaProdutoID")
+  private CategoriaProdutoModel categoriaProduto;
 }

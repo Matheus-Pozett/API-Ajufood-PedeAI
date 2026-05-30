@@ -1,10 +1,12 @@
 package br.com.ajufood.pedeai.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -12,6 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "categoriaProduto")
@@ -33,4 +38,17 @@ public class CategoriaProdutoModel {
   @Column(name = "descricao", length = 256)
   @Length(min = 10, max = 256, message = "A descrição deverá ter no mínimo 10 caracteres e no máximo 256 caracteres")
   private String descricao;
+
+  @OneToMany(mappedBy = "categoriaProduto")
+  private List<ProdutoModel> produtos = new ArrayList<>();
+
+  public void addProduto(ProdutoModel produto) {
+    produtos.add(produto);
+    produto.setCategoriaProduto(this);
+  }
+
+  public void removeProduto(ProdutoModel produto) {
+    produtos.remove(produto);
+    produto.setCategoriaProduto(null);
+  }
 }
