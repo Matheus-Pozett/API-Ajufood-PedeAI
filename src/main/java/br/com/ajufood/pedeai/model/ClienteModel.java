@@ -25,7 +25,7 @@ public class ClienteModel {
     @Column(name = "id")
     private int id;
 
-    @Length(min = 2, max = 128, message = "O nome deverá ter no mínimo 2 caracteres e no máximo 256 caracteres")
+    @Length(min = 2, max = 128, message = "O nome deverá ter no mínimo 2 caracteres e no máximo 128 caracteres")
     @NotBlank(message = "O nome é obrigatório.")
     @Column(name = "nome", nullable = false, length = 128)
     private String nome;
