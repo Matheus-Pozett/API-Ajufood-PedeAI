@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -43,8 +44,9 @@ public class PagamentoModel {
   private LocalDateTime dataHora;
 
   @NotNull(message = "O ID do pedido é obrigatório.")
-  @Column(name = "pedidoID", nullable = false)
-  private int pedidoId;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "pedidoID")
+  private PedidoModel pedido;
 
   @NotNull(message = "O ID da forma de pagamento é obrigatório.")
   @ManyToOne(fetch = FetchType.LAZY)

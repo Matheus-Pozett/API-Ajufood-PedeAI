@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -59,4 +60,7 @@ public class PedidoModel {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "enderecoEntregaID")
   private EnderecoModel endereco;
+
+  @OneToOne(mappedBy = "pedido")
+  private PagamentoModel pagamento;
 }
