@@ -3,7 +3,9 @@ package br.com.ajufood.pedeai.service;
 import br.com.ajufood.pedeai.exception.ConstraintException;
 import br.com.ajufood.pedeai.exception.DataIntegrityException;
 import br.com.ajufood.pedeai.exception.ObjectNotFoundException;
+import br.com.ajufood.pedeai.model.CategoriaProdutoModel;
 import br.com.ajufood.pedeai.model.ProdutoModel;
+import br.com.ajufood.pedeai.repository.CategoriaProdutoRepository;
 import br.com.ajufood.pedeai.repository.ProdutoRepository;
 import br.com.ajufood.pedeai.rest.dto.request.ProdutoRequestDTO;
 import br.com.ajufood.pedeai.rest.dto.response.ProdutoResponseDTO;
@@ -13,11 +15,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
   private final ProdutoRepository produtoRepository;
+  private final CategoriaProdutoRepository categoriaProdutoRepository;
   private final ModelMapper modelMapper;
 
   @Transactional(readOnly = true)
@@ -31,9 +35,13 @@ public class ProdutoService {
   }
 
   @Transactional(readOnly = true)
-  public List<ProdutoResponseDTO> findAll() {
-    return produtoRepository.findAll().stream()
-      .map(produto -> modelMapper.map(produto, ProdutoResponseDTO.class))
+  public List<ProdutoResponseDTO> findAll(Long categoriaId) {
+    List<ProdutoModel> products = (categoriaId == null)
+      ? produtoRepository.findByDisponivelTrue()
+      : produtoRepository.findByCategoriaProdutoIdAndDisponivelTrue(categoriaId);
+
+    return products.stream()
+      .map(product -> modelMapper.map(product, ProdutoResponseDTO.class))
       .toList();
   }
 
