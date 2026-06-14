@@ -49,11 +49,11 @@ public class ItensPedidoModel {
 
   @NotNull(message = "O ID do pedido é obrigatório.")
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "pedidoID")
+  @JoinColumn(name = "pedidoId")
   private PedidoModel pedido;
 
   @NotNull(message = "O ID do produto é obrigatório.")
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "produtoID")
+  @JoinColumn(name = "produtoId")
   private ProdutoModel produto;
 }
