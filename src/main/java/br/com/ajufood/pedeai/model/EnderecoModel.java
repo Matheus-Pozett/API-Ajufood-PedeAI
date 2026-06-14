@@ -67,7 +67,7 @@ public class EnderecoModel {
 
   @NotNull(message = "ClienteID é obrigatório.")
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "clienteID")
+  @JoinColumn(name = "clienteId")
   private ClienteModel cliente;
 
   @OneToMany(mappedBy = "endereco")
