@@ -53,12 +53,12 @@ public class PedidoModel {
 
   @NotNull(message = "O ID do cliente é obrigatório.")
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "clienteID")
+  @JoinColumn(name = "clienteId")
   private ClienteModel cliente;
 
   @NotNull(message = "O ID do endereço de entrega é obrigatório.")
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "enderecoEntregaID")
+  @JoinColumn(name = "enderecoEntregaId")
   private EnderecoModel endereco;
 
   @OneToOne(mappedBy = "pedido")
