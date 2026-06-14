@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,8 +29,10 @@ public class ProdutoController {
 
   @Operation(summary = "Lista todos os produtos")
   @GetMapping
-  public ResponseEntity<List<ProdutoResponseDTO>> getAll() {
-    return ResponseEntity.ok(produtoService.findAll());
+  public ResponseEntity<List<ProdutoResponseDTO>> getAll(
+    @RequestParam(required = false) Long categoriaId
+  ) {
+    return ResponseEntity.ok(produtoService.findAll(categoriaId));
   }
 
   @Operation(summary = "Busca um produto pelo id")
