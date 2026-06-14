@@ -45,11 +45,11 @@ public class PagamentoModel {
 
   @NotNull(message = "O ID do pedido é obrigatório.")
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "pedidoID")
+  @JoinColumn(name = "pedidoId")
   private PedidoModel pedido;
 
   @NotNull(message = "O ID da forma de pagamento é obrigatório.")
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "formaPagamentoID")
+  @JoinColumn(name = "formaPagamentoId")
   private FormaPagamentoModel formaPagamento;
 }
