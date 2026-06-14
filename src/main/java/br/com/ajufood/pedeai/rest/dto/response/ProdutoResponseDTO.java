@@ -12,12 +12,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProdutoResponseDTO {
-
   private int id;
   private String nome;
   private String descricao;
   private BigDecimal preco;
-  private boolean disponivel;
-  private int categoriaProdutoId;
+  private String nomeCategoria;
 
 }
