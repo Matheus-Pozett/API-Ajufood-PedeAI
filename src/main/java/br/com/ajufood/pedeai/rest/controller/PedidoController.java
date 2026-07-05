@@ -2,11 +2,13 @@ package br.com.ajufood.pedeai.rest.controller;
 
 import br.com.ajufood.pedeai.rest.dto.request.PedidoRequestDTO;
 import br.com.ajufood.pedeai.rest.dto.response.PedidoResponseDTO;
+import br.com.ajufood.pedeai.rest.dto.response.RelatorioVendaCategoriaDTO;
 import br.com.ajufood.pedeai.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,8 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -63,5 +67,18 @@ public class PedidoController {
   public ResponseEntity<Void> delete(@PathVariable int id) {
     pedidoService.delete(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @Operation(summary = "Gera relatório de vendas por categoria")
+  @ApiResponse(responseCode = "200", description = "Relatório gerado com sucesso")
+  @ApiResponse(responseCode = "400", description = "Data de início posterior à data de fim")
+  @GetMapping("/relatorios/vendas-por-categoria")
+  public ResponseEntity<List<RelatorioVendaCategoriaDTO>> getRelatorioVendasPorCategoria(
+    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim)
+  {
+    return ResponseEntity.ok(
+      pedidoService.gerarRelatorioVendasPorCategoria(dataInicio, dataFim)
+    );
   }
 }
