@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
@@ -22,6 +23,7 @@ import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "pedido")
@@ -60,6 +62,9 @@ public class PedidoModel {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "enderecoEntregaId")
   private EnderecoModel endereco;
+
+  @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY)
+  private List<ItensPedidoModel> itensPedido;
 
   @OneToOne(mappedBy = "pedido")
   private PagamentoModel pagamento;
